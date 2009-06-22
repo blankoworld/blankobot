@@ -10,6 +10,11 @@
 
 ## RFC : http://www.ietf.org/rfc/rfc1459.txt
 
+## Requiert : 
+## - fichierConf.rb
+## - messageIRC.rb
+## - config.yml
+
 require "socket"
 require "fichierConf"
 require "messageIRC"
@@ -355,7 +360,7 @@ class Personne
 end
 
 # The main program
-fichier = "botirc.yml"
+fichier = "config.yml"
 conf = FichierConf.new( fichier )
 if conf.lectureReussie? == false
   puts "Un problème est survenu sur le fichier #{fichier}, vérifier que le fichier existe."
