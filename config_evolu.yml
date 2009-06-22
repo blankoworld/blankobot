@@ -1,5 +1,5 @@
 serveur: irc.evolu.net
-port:    6657
+port:    6667
 canal:   "#testbot"
 pseudo:  NoPseudo
 mdp:     elektra
