@@ -195,7 +195,8 @@ class IRC
       # Puis le message par la suite
       beneficiaire = args.split(' ')[0]
       msg = args.split("#{beneficiaire} ")[1]
-      send m.prive(beneficiaire, exp, msg)
+      # bug de la fonction PRIV, donc deux fois beneficiaire
+      send m.prive(beneficiaire, beneficiaire, msg)
     elsif nbreArgs == 1
       # Un argument seulement a été donné : la personne (normalement)
       # On envoie un message sur le canal en cours
@@ -358,7 +359,44 @@ end
 
 # The main program
 
-fichier = "config.yml"
+# Version du programme
+version="0.1.1"
+
+aide = Array.new
+aide << "botirc version #{version}"
+aide << ""
+aide << "Utilisation : ruby botirc.rb [--aide] fichierConfiguration"
+aide << "Par défaut le programme requièrt l'utilisation d'un fichier de configuration"
+aide << ""
+aide << "Exemples : "
+aide << "ruby botirc.rb --aide     => renvoie la présente aide."
+aide << "ruby botirc.rb config.yml => lance le robot IRC à l'aide du fichier de configuration config.yml"
+
+nbreArgs = ARGV.length
+if nbreArgs != 1
+  # Nous avons plus d'un argument
+  puts "Nombre d'arguments invalide. Tapez ruby botirc.rb --aide pour en savoir plus."
+  exit
+else
+  # Nous avons un argument
+  puts ARGV[0]
+  case (cmd = ARGV[0])
+  when "--aide"
+    aide.each do |l|
+      puts l
+    end
+    exit
+  when /(\w+.yml)/
+    # Notre fichier de configuration
+    puts "nous avons un fichier YML #{$1}"
+    fichier = $1.untaint
+  else
+    puts "Commande #{cmd} inconnue. Tapez ruby botirc.rb --aide pour en savoir plus."
+    exit
+  end
+end
+
+#fichier = "config.yml"
 conf = FichierConf.new( fichier )
 if conf.lectureReussie? == false
   puts "Un problème est survenu sur le fichier #{fichier}, vérifier que le fichier existe."
