@@ -10,33 +10,6 @@
 
 ## RFC : http://www.ietf.org/rfc/rfc1459.txt
 
-## TODO LIST :
-## - faire une liste blanche de personnes autorises a utiliser le robot
-## - permette l'envoi de n'importe quelle commande avec un / par exemple ou sans
-## - faire une aide contextuelle, comme un !aide => n'afficher que les commandes publiques
-## - permettre la reconnexion automatique à un canal auquel il vient de se 
-## faire jarter (pas plus que 2 a trois fois)
-## - permettre la connexion à plusieurs canaux
-## - permettre l'utilisation d'argument pour le present script : botirc arg1 arg2
-## - enregistrer les retours dans un fichier ?
-## - option VDM (viedemerde)
-## - option d'ajout de news (on affiche les nouvelles du flux RSS d'un site)
-## - option de lancé de dé (!de 20) (pas plus qu'un dé 100)
-## - faire un fichier yaml de configurations diverses et l'adapter en fonction
-## - permettre l'ajout en direct d'utilisateurs dans le authorized_users =>
-##   requiert un fichier yaml de configuration
-
-## FUNCTION LIST (in the future) :
-## dit #canal :message => similaire à say
-## va #canal => similaire à join
-## op #canal pseudo
-## !de 100
-## !google
-## !images
-## !neuf adresse_flux_rss.xml => similaire à "news"
-## !aide
-## faire #canal :message => similaire à act --> PRIVMSG #canal :ACTION s'amuse
-
 require "socket"
 require "fichierConf"
 require "messageIRC"
