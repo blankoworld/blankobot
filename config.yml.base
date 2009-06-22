@@ -1,0 +1,10 @@
+serveur: ordyz
+port:    6667
+canal:   "#testbot"
+pseudo:  NoPseudo
+mdp:     elektra
+utilisateursAutorises:
+- od-
+- Blanko
+- Blankoworld
+- Personne
