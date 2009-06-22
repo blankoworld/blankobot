@@ -9,6 +9,9 @@ faire jarter (pas plus que 2 a trois fois)
 - permettre la connexion à plusieurs canaux
 - permettre l'utilisation d'argument pour le present script : botirc arg1 arg2
 - enregistrer les retours dans un fichier ?
+- si retour dans un fichier, mais également un fichier de conf, sans compter une
+  possibilité d'ajouter des arguments à notre script, pourquoi ne pas faire ceci :
+  botirc <fichierConf> <fichierSortie> ?
 - option VDM (viedemerde)
 - option d'ajout de news (on affiche les nouvelles du flux RSS d'un site)
 - FAIT | option de lancé de dé (!de 20) (pas plus qu'un dé 100)

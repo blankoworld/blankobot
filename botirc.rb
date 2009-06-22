@@ -15,11 +15,13 @@
 ## Requiert : 
 ## - fichierConf.rb
 ## - messageIRC.rb
+## - personne.rb
 ## - config.yml
 
 require "socket"
 require "fichierConf"
 require "messageIRC"
+require "personne"
 
 # Don't allow use of "tainted" data by potentially dangerous operations
 $SAFE=1
@@ -354,22 +356,8 @@ class IRC
 	end
 end
 
-class Personne
-
-	attr_accessor :nom
-	attr_accessor :autorise
-
-	def initialize(nom)
-		@nom = nom
-		@autorise = false
-	end
-
-	def estAutorise?()
-		return true if @autorise == true
-	end
-end
-
 # The main program
+
 fichier = "config.yml"
 conf = FichierConf.new( fichier )
 if conf.lectureReussie? == false
