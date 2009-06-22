@@ -4,7 +4,9 @@
 
 ## Decouvert sur : http://snippets.dzone.com/posts/show/1785
 ## Puis complete grace a : 
-## http://zefredz.frimouvy.org/dotclear/index.php?2006/03/17/111-un-bot-irc-elementaire-en-ruby
+##  http://zefredz.frimouvy.org/dotclear/index.php?2006/03/17/111-un-bot-irc-elementaire-en-ruby
+## Le script de base proviendrait de ruby-irc
+##  disponible ici : http://rubyforge.org/projects/ruby-irc/
 
 ## Auteur actuel (pour les fonctionnalites suivantes) : Blankoworld
 
