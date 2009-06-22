@@ -128,15 +128,23 @@ class IRC
       # Décrire ici l'aide pour chacune des commandes
       case arg
       when "aide"
-        msg << "Utilisation: !aide, renvoie l'ensemble des commandes disponibles."
+        msg << "Utilisation: "
+        msg << "!aide, renvoie l'ensemble des commandes disponibles."
       when "de"
-        msg << "Utilisation: !de <nbreFace>, avec nbreFace compris entre 1 et 100."
+        msg << "Utilisation: "
+        msg << "!de <nbreFace>, avec nbreFace compris entre 1 et 100, renvoie le résultat d'un lancé de dé à <nbreFace> faces."
       when "mp"
-        msg << "Utilisation: !mp <destination> <message>, envoi le contenu de <message> à l'utilisateur/canal <destination>."
+        msg << "Utilisation: "
+        msg << "!mp <destination> <message>, envoi le contenu de <message> à l'utilisateur/canal <destination>."
       when "salut"
         msg << "Utilisation: "
+        msg << "!salut, vous salue dans le canal courant."
+        msg << "!salut <pseudo>, salue la personne <pseudo> de votre part dans le canal courant."
+        msg << "!salut <pseudo> <message>, salue la personne <pseudo>, avec le contenu de <message>, en message privé."
       when "pseudo"
         msg << "Utilisation: "
+        msg << "!pseudo <pseudo>, permet de vérifier la permission de l'utilisateur <pseudo> à utiliser le robot."
+        msg << "Il faut que l'utilisateur <pseudo> soit enregistré d'une quelconque manière sur le réseau."
       else
         # La commande est inconnue
         msg << "Commande inconnue."
