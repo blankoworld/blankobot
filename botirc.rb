@@ -404,7 +404,7 @@ if conf.lectureReussie? == false
 else
   # If we get an exception, then print it out and keep going (we do NOT want
   # to disconnect unexpectedly!)
-###  irc = IRC.new('ordyz', 6667, 'NoPseudo', '#testbot', 'elektra')
+###  irc = IRC.new('localhost', 6667, 'NoIdea', '#testbot', 'anything')
   irc = IRC.new(conf.serveur, conf.port, conf.pseudo, conf.canal, conf.mdp)
   irc.connect()
 

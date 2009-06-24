@@ -24,6 +24,7 @@ faire jarter (pas plus que 2 a trois fois)
   --> permet de donner accès à des commandes spécifiques comme OP, VOICE, etc.
 - permettre au robot de discuter sur un canal pour dire salut, ça va? moi bien, et toi ?
 - permettre la connexion à un serveur sécurisé
+- CHANGER MOT DE PASSE du compte IRC utilisé pour les tests
 
 Liste des potentielles FONCTIONS
 --------------------------------

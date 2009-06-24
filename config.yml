@@ -1,10 +1,9 @@
-serveur: ordyz
+serveur: ird.domaine.com
 port:    6667
 canal:   "#testbot"
-pseudo:  NoPseudo
-mdp:     elektra
+pseudo:  NoIdea
+mdp:     anything
 utilisateursAutorises:
-- od-
 - Blanko
 - Blankoworld
 - Personne
