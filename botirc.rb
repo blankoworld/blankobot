@@ -13,14 +13,14 @@
 ## RFC : http://www.ietf.org/rfc/rfc1459.txt
 
 ## Requiert : 
-## - fichierConf.rb
-## - messageIRC.rb
+## - fichier_conf.rb
+## - message_irc.rb
 ## - personne.rb
 ## - config.yml
 
 require "socket"
-require "fichierConf"
-require "messageIRC"
+require "fichier_conf"
+require "message_irc"
 require "personne"
 
 # Don't allow use of "tainted" data by potentially dangerous operations
@@ -39,23 +39,23 @@ class IRC
 		@channel = channel
 		@password = password
 		## Tableau des utilisateurs
-		@authorizedUsers = Array.new
+		@authorized_users = Array.new
 		
 		[ "od-", "Personne", "Blankoworld", "Blanko" ].each do |u|
-			@authorizedUsers << Personne.new(u)
+			@authorized_users << Personne.new(u)
 		end
 
 		## Utilise pour diverses choses
-		@whoisActive = false
-		@whoisPseudo = ""
-		@registeredUsers = Array.new
+		@whois_actif = false
+		@whois_pseudo = ""
+		@registered_users = Array.new
 	end
 
-  def afficher()
+  def afficher_params()
     return "S:#{@server.class}P:#{@port.class}N:#{@nick.class}C:#{@channel.class}MdP:#{@password.class}"
   end
 
-	def send(s)
+	def envoi(s)
 	# Send a message to the irc server and print it to the screen
 		puts "--> #{s}"
 		@irc.send "#{s}\n", 0 
@@ -64,10 +64,10 @@ class IRC
 	def connect()
 	# Connect to the IRC server
 		@irc = TCPSocket.new @server, @port
-		send "USER nopseudo dossmann.net ordyz :Dave Null" #<username> <hostname> <servername> :<realname>
-		send "NICK #{@nick}"
-		send "JOIN #{@channel}"
-		send "PRIVMSG NickServ :identify #{@password}"
+		envoi "USER nopseudo dossmann.net ordyz :Dave Null" #<username> <hostname> <servername> :<realname>
+		envoi "NICK #{@nick}"
+		envoi "JOIN #{@channel}"
+		envoi "PRIVMSG NickServ :identify #{@password}"
 	end
 
 	def evaluate(s)
@@ -89,6 +89,11 @@ class IRC
 ###  Fonctions diverses
 ###
 #######
+
+  def debug(msg)
+  # Utile pour la période de développement
+    puts msg if @@DEBUG
+  end
 
   def nbreMots(chaine)
   # Defini le nombre de mots contenus dans la chaîne
@@ -161,9 +166,9 @@ class IRC
       msg << "Tapez !aide <commande> pour plus d'informations sur une commande."
     end
     msg.each do |content|
-      send m.prive(exp, exp, "#{content}")
+      envoi m.prive(exp, exp, "#{content}")
     end
-    puts "Nombre d'arguments : #{nbre}" if true & @@DEBUG
+    debug("Nombre d'arguments : #{nbre}")
   end
 
   def commande_de(joueur, dest, args)
@@ -184,7 +189,7 @@ class IRC
 			msg = "Le nombre de faces possibles pour un dé est compris entre 1 et #{valeurMax}."
 		end
 		puts "[ FONCTION dé à #{faces} faces ]"
-  	send m.prive(dest, joueur, msg)
+  	envoi m.prive(dest, joueur, msg)
   end
 
 	def commande_salut(exp, dest, args)
@@ -196,15 +201,15 @@ class IRC
       beneficiaire = args.split(' ')[0]
       msg = args.split("#{beneficiaire} ")[1]
       # bug de la fonction PRIV, donc deux fois beneficiaire
-      send m.prive(beneficiaire, beneficiaire, msg)
+      envoi m.prive(beneficiaire, beneficiaire, msg)
     elsif nbreArgs == 1
       # Un argument seulement a été donné : la personne (normalement)
       # On envoie un message sur le canal en cours
       msg = "#{args}, #{exp} te salue !"
-      send m.prive(dest, exp, msg)
+      envoi m.prive(dest, exp, msg)
     else
       msg = "Salut à toi, #{exp}"
-      send m.prive(dest, exp, msg)
+      envoi m.prive(dest, exp, msg)
     end
 	end
 
@@ -221,27 +226,27 @@ class IRC
 #######
 
 	def whois(pseudo)
-		send "WHOIS #{pseudo}"
+		envoi "WHOIS #{pseudo}"
 		@@WHOIS = 10
 	end
 
 	def verif_pseudo(pseudo)
 		puts "[ VERIFICATION PSEUDO: #{pseudo} ]"
-		if @authorizedUsers.include?("#{pseudo}") then
+		if @authorized_users.include?("#{pseudo}") then
 			msg = "CONNU"
 			resultat = true
 		else
 			msg = "NON CONNU"
 			resultat = false
 		end
-		puts "L'utilisateur #{pseudo} est #{msg} de ce robot" if true & @@DEBUG
-		@whoisActive = true
-		@whoisPseudo = "#{pseudo}"
-		puts @whoisPseudo if true & @@DEBUG
+		debug("L'utilisateur #{pseudo} est #{msg} de ce robot")
+		@whois_actif = true
+		@whois_pseudo = "#{pseudo}"
+		debug(@whois_pseudo)
 		# ligne pour irc.freenode.net par exemple
-		send "WHOIS #{pseudo}"
+		envoi "WHOIS #{pseudo}"
 		# ligne pour irc.evolu.net
-		send "PRIVMSG NickServ STATUS #{pseudo}"
+		envoi "PRIVMSG NickServ STATUS #{pseudo}"
 		return resultat
 	end
 
@@ -265,27 +270,27 @@ class IRC
 		when /^PING :(.+)$/i
 			# This is for the bot not being kick by servers
 			puts "[ Server ping ]"
-			send "PONG :#{$1}"
+			envoi "PONG :#{$1}"
 		when /^:(.+?)!(.+?)@(.+?)\sPRIVMSG\s.+\s:[\001]PING (.+)[\001]$/i
 			puts "[ CTCP PING from #{$1}!#{$2}@#{$3} ]"
-			send "NOTICE #{$1} :\001PING #{$4}\001"
+			envoi "NOTICE #{$1} :\001PING #{$4}\001"
 		when /^:(.+?)!(.+?)@(.+?)\sPRIVMSG\s.+\s:[\001]VERSION[\001]$/i
 			puts "[ CTCP VERSION from #{$1}!#{$2}@#{$3} ]"
-			send "NOTICE #{$1} :\001VERSION Ruby-irc v0.042\001"
+			envoi "NOTICE #{$1} :\001VERSION Ruby-irc v0.042\001"
 		when /^:(.+?)!(.+?)@(.+?)\sPRIVMSG\s(.+)\s:EVAL (.+)$/i
 			puts "[ EVAL #{$5} from #{$1}!#{$2}@#{$3} ]"
-			send "PRIVMSG #{(($4==@nick)?$1:$4)} :#{evaluate($5)}"
+			envoi "PRIVMSG #{(($4==@nick)?$1:$4)} :#{evaluate($5)}"
 		# :clarke.freenode.net 320 NoPseudo Personne :is identified to services <= freenode
-		when /^:(.+?)\s(.+?)\s#{@nick}\s#{@whoisPseudo}\s:(.+?)identified(.+?)$/i
-			puts "[ ETUDE WHOIS sur #{@whoisPseudo} ]"
+		when /^:(.+?)\s(.+?)\s#{@nick}\s#{@whois_seudo}\s:(.+?)identified(.+?)$/i
+			puts "[ ETUDE WHOIS sur #{@whois_pseudo} ]"
 		# :NickServ!services@evolu.net NOTICE NoPseudo :STATUS Personne 3 <= EVOLU.net
-		when /^:(.+?)!(.+?)@(.+?)\sNOTICE\s#{@nick}\s:STATUS\s#{@whoisPseudo}\s(.+?)$/i
-			puts "[ ETUDE STATUT sur #{@whoisPseudo}  ]"
-			if true & @whoisActive
+		when /^:(.+?)!(.+?)@(.+?)\sNOTICE\s#{@nick}\s:STATUS\s#{@whois_pseudo}\s(.+?)$/i
+			puts "[ ETUDE STATUT sur #{@whois_pseudo}  ]"
+			if true && @whois_actif
 				puts "Tu es repéré #{$4}"
-				@whoisActive = false
-				@registeredUsers << Personne.new(@whoisPseudo)
-				send "PRIVMSG #{@whoisPseudo} :Tu as été enregistré sur mon robot IRC. Si tu n'en a pas fait la demande, merci de me contacter à l'adresse suivante : blanko@blanko.fr.st . J'aviserais."
+				@whois_actif = false
+				@registered_users << Personne.new(@whois_pseudo)
+				envoi "PRIVMSG #{@whois_pseudo} :Tu as été enregistré sur mon robot IRC. Si tu n'en a pas fait la demande, merci de me contacter à l'adresse suivante : blanko@blanko.fr.st . J'aviserais."
 			else
 				puts "Aucune demande n'a été faite."
 			end
@@ -299,7 +304,7 @@ class IRC
 			when /^aide/
         commande_aide(expediteur, commande, arguments)
 			when /^de/
-				puts "[ COMMANDE !de --> #{s} ]" if true & @@DEBUG
+        debug("[ COMMANDE !de --> #{s} ]")
         nbreFaces = $1
         commande_de(expediteur, cible, arguments)
 			when /^salut/
@@ -309,14 +314,12 @@ class IRC
 				verif_pseudo($1)
 			when /^mp/
 				msg = "/msg #{arguments} Salut" if arguments
-				sendmsg = false
-				puts msg if true & @@DEBUG
-				send "PRIVMSG :#{arguments}"
+				debug(msg)
+				envoi "PRIVMSG :#{arguments}"
 			when /^s/
 				msg = "#{arguments}" if arguments
-				sendmsg = false
 				puts msg
-				send msg
+				envoi msg
 			when /^qui/
 				if expediteur == "Personne"
 					msg = "tu as le droit"
@@ -325,13 +328,11 @@ class IRC
 				end
 			# autres commandees
 			else
-				#msg = "UTILISATEUR #{expediteur} LANCE #{commande}"
         m = Message.new
         msg = m.prive(cible, "UTILISATEUR #{expediteur} LANCE #{commande}")
-        send msg
+        envoi msg
 				puts msg
 			end
-#			send "PRIVMSG #{@channel} :#{msg}" if sendmsg != false
 		else
 			puts s
 		end
@@ -346,7 +347,7 @@ class IRC
 				if s == $stdin then
 					return if $stdin.eof
 					s = $stdin.gets
-					send s
+					envoi s
 				elsif s == @irc then
 					return if @irc.eof
 					s = @irc.gets
