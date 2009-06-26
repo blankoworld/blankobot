@@ -37,6 +37,6 @@ Liste des potentielles FONCTIONS
 - !google
 - !images
 - !neuf adresse_flux_rss.xml => similaire à "news"
-- !aide
+- FAIT | !aide
 - faire #canal :message => similaire à act --> PRIVMSG #canal :ACTION s'amuse
 
