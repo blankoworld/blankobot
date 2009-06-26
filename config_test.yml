@@ -1,9 +1,13 @@
-serveur: ordyz
-port:    6667
-canal:   "#testbot"
-pseudo:  NoIdea
-mdp:     anything
-utilisateursAutorises:
+serveur:          ordyz
+port:             6667
+canal:            "#testbot"
+pseudo:           NoIdea
+mdp:              anything
+nom_utilisateur:  noidea
+nom_hote:         mydomain.com
+nom_serveur:      mycomputer
+nom_reel:         "Dave Null"
+utilisateurs_autorises:
 - Blanko
 - Blankoworld
 - Personne

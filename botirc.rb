@@ -32,12 +32,17 @@ class IRC
 # En mode DEBUGGAGE
 @@DEBUG=true
 
-	def initialize(server, port, nick, channel, password)
-		@server = server
-		@port = port
-		@nick = nick
-		@channel = channel
-		@password = password
+	def initialize(config)
+		@server = config.serveur
+		@port = config.port
+		@nick = config.pseudo
+		@channel = config.canal
+		@password = config.mdp
+    
+    @nom_utilisateur = config.nom_utilisateur
+    @nom_hote = config.nom_hote
+    @nom_serveur = config.nom_serveur
+    @nom_reel = config.nom_reel
 		## Tableau des utilisateurs
 		@authorized_users = Array.new
 		
@@ -64,7 +69,8 @@ class IRC
 	def connect()
 	# Connect to the IRC server
 		@irc = TCPSocket.new @server, @port
-		envoi "USER nopseudo dossmann.net ordyz :Dave Null" #<username> <hostname> <servername> :<realname>
+    # USER <username> <hostname> <servername> :<realname>
+		envoi "USER nopseudo dossmann.net ordyz :Dave Null"
 		envoi "NICK #{@nick}"
 		envoi "JOIN #{@channel}"
 		envoi "PRIVMSG NickServ :identify #{@password}"
@@ -399,14 +405,14 @@ end
 
 #fichier = "config.yml"
 conf = FichierConf.new( fichier )
-if conf.lectureReussie? == false
+if conf.lecture_reussie? == false
   puts "Un problème est survenu sur le fichier #{fichier}, vérifier que le fichier existe."
   exit
 else
   # If we get an exception, then print it out and keep going (we do NOT want
   # to disconnect unexpectedly!)
 ###  irc = IRC.new('localhost', 6667, 'NoIdea', '#testbot', 'anything')
-  irc = IRC.new(conf.serveur, conf.port, conf.pseudo, conf.canal, conf.mdp)
+  irc = IRC.new(conf)
   irc.connect()
 
   begin

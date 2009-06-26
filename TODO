@@ -26,6 +26,11 @@ faire jarter (pas plus que 2 a trois fois)
 - permettre la connexion à un serveur sécurisé
 - FAIT | CHANGER MOT DE PASSE du compte IRC utilisé pour les tests
 - Ouvrir un fichier config.yml si aucun argument donné
+- FAIT | Ajouter des paramètres supplémenaires dans le fichier de configuration pour :
+  + nom d'utilisateur
+  + nom de l'hôte client
+  + nom du serveur client
+  + nom réel du client
 
 Liste des potentielles FONCTIONS
 --------------------------------
