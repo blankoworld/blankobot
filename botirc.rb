@@ -130,6 +130,18 @@ class IRC
     end
   end
 
+#######
+###
+### FIN Fonctions diverses
+###
+#######
+
+#######
+###
+###  Fonctions de vérifications en tous genres
+###
+#######
+
 	def verification_pseudo(pseudo)
   # envoie un ensemble de commande au serveur qui permettront de savoir si 
   #  l'utilisateur est enregistré sur le serveur
@@ -193,7 +205,7 @@ class IRC
 
 #######
 ###
-### FIN Fonctions diverses
+### FIN Fonctions de vérifications en tous genres
 ###
 #######
 
@@ -341,6 +353,7 @@ class IRC
   def commande_quitte(exp, dest, msg)
   # permet de fermer le robot IRC, 
   #  mais seulement si l'utilisateur est identifié
+    puts "[ COMMANDE !quitte ]"
     m = Message.new
     if utilisateur_enregistre?(exp)
       envoi m.depart(msg)
@@ -349,6 +362,7 @@ class IRC
       # On force l'envoi à l'utilisateur (dest) en l'utilisant deux fois
       envoi m.prive(exp, exp, msg)
     end
+    puts "MESSAGE : #{msg}"
   end
 
 #######
@@ -363,10 +377,7 @@ class IRC
 ###
 #######
 
-	def whois(pseudo)
-		envoi "WHOIS #{pseudo}"
-		@@WHOIS = 10
-	end
+### Fonctions à trier, compléter, supprimer une fois inutiles, etc.
 
   def envoi_chaine_serveur(chaine)
   # envoi tel quel une chaîne de caractères sur le serveur
@@ -412,26 +423,22 @@ class IRC
 			commande = $5
       arguments = commande[/[^\s]+ +(.+)/, 1]
 			case commande
-			when /^aide/            #!aide => affiche l'aide
+			when /^aide/                #!aide => affiche l'aide
         commande_aide(expediteur, commande, arguments)
-			when /^de/              #!de => lance un dé à <args> faces
+			when /^de/                  #!de => lance un dé à <args> faces
         commande_de(expediteur, cible, arguments)
-			when /^salut/           #!salut => dit bonjour au canal, à une personne, ou donne un message personnalisé
+			when /^salut/               #!salut => dit bonjour au canal, à une personne, ou donne un message personnalisé
         commande_salut(expediteur, cible, arguments)
-      when /^il/              #!il => fait agir le robot sur le canal (ACTION)
+      when /^il/                  #!il => fait agir le robot sur le canal (ACTION)
         commande_il(expediteur, cible, arguments)
 			when /^identifie\s(\S+)$/i  #!identifie => lance l'identification du pseudo
 				verification_pseudo($1)
-			when /^mp/              #!mp => envoie un message privé à quelqu'un
-				msg = "/msg #{arguments} Salut" if arguments
-				debug(msg)
-				envoi "PRIVMSG :#{arguments}"
-			when /^s(.+)$/i               #!s => envoie une chaîne de caractère au serveur
+			when /^mp\s(\S+)\s(.+)$/i   #!mp => envoie un message privé à quelqu'un
+        m = Message.new
+        envoi m.prive(expediteur, $1, $2)
+			when /^s(.+)$/i             #!s => envoie une chaîne de caractère au serveur
         envoi_chaine_serveur($1)
-      when /^quitte/          #!quitte => quitte le serveur irc
-#        puts "[ COMMANDE autorisé? ]"
-#        m = Message.new
-#        envoi m.prive(expediteur, cible, "#{$1} est autorisé.") if utilisateur_enregistre?($1)
+      when /^quitte/              #!quitte => quitte le serveur irc
         commande_quitte(expediteur, cible, arguments)
 			# autres commandees
 			else
