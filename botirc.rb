@@ -216,7 +216,8 @@ class IRC
   end
 
 	def commande_salut(exp, dest, args)
-  # saluer une personne, optionnellement en lui envoyant un message personnalisé
+  # saluer une personne, optionnellement en lui envoyant un message personnalisé 
+    puts "[ COMMANDE !salut ]"
     m = Message.new
     nbreArgs = nbreMots(args)
     if nbreArgs > 1
@@ -239,6 +240,7 @@ class IRC
 
   def commande_il(exp, dest, args)
   # faire faire quelque chose à notre robot
+    puts "[ COMMANDE !il ]"
     m = Message.new
     msg = args.to_s
     puts "[ ACTION | #{@nick} #{args} ]"
@@ -336,14 +338,10 @@ class IRC
 			when /^aide/
         commande_aide(expediteur, commande, arguments)
 			when /^de/
-        debug("[ COMMANDE !de --> #{s} ]")
-        nbreFaces = $1
         commande_de(expediteur, cible, arguments)
 			when /^salut/
-        puts "[ COMMANDE !salut ]"
         commande_salut(expediteur, cible, arguments)
       when /^il/
-        puts "[ COMMANDE !il ]"
         commande_il(expediteur, cible, arguments)
 			when /^pseudo\s(.+)$/i
 				verif_pseudo($1)
