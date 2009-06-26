@@ -123,6 +123,16 @@ class IRC
 ###
 #######
 
+  def commande_non_connue(exp, dest, cmd)
+  # Notifie l'utilisateur qu'il a saisi une commande inconnue
+   puts "[ COMMANDE INCONNUE ]"
+   m = Message.new
+   msg = "Commande '''#{cmd}''' inconnue. Taper !aide pour en savoir plus."
+   # on envoir délibéremment à l'expediteur pour ne pas charger le canal
+   envoi m.prive(exp, exp, msg)
+ 	 puts msg
+  end
+
   def commande_aide(exp, cmd, arg)
   # Envoi un message d'aide
   # Contient:
@@ -353,10 +363,7 @@ class IRC
 				end
 			# autres commandees
 			else
-        m = Message.new
-        msg = m.prive(cible, "UTILISATEUR #{expediteur} LANCE #{commande}")
-        envoi msg
-				puts msg
+        commande_non_connue(expediteur, cible, commande)
 			end
 		else
 			puts s
