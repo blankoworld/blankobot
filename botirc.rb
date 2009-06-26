@@ -248,9 +248,9 @@ class IRC
       when "de"
         msg << "Utilisation : "
         msg << "!de <nbreFace>, avec nbreFace compris entre 1 et 100, renvoie le résultat d'un lancé de dé à <nbreFace> faces."
-      when "mp"
+      when "msg"
         msg << "Utilisation : "
-        msg << "!mp <destination> <message>, envoi le contenu de <message> à l'utilisateur/canal <destination>."
+        msg << "!msg <destination> <message>, envoi le contenu de <message> à l'utilisateur/canal <destination>."
       when "salut"
         msg << "Utilisation : "
         msg << "!salut, vous salue dans le canal courant."
@@ -286,8 +286,8 @@ class IRC
       # On affiche l'ensemble des commandes disponibles
       msg << ""
       msg << "Commandes disponibles: "
-      msg << "aide, de, salut, il, identifie"
-      msg << "privées: quitte, s, mp" if utilisateur_enregistre?(exp)
+      msg << "aide, de, identifie, il, msg, salut"
+      msg << "privées: quitte, s" if utilisateur_enregistre?(exp)
       msg << ""
       msg << "Tapez !aide <commande> pour plus d'informations sur une commande."
     end
@@ -365,6 +365,12 @@ class IRC
     puts "MESSAGE : #{msg}"
   end
 
+  def commande_msg(exp, dest, msg)
+  # envoi un message privé au destinataire (dest)
+    m = Message.new
+    envoi m.prive(dest, exp, msg)
+  end
+
 #######
 ###
 ### FIN Fonctions liées aux commandes utilisateurs
@@ -433,9 +439,8 @@ class IRC
         commande_il(expediteur, cible, arguments)
 			when /^identifie\s(\S+)$/i  #!identifie => lance l'identification du pseudo
 				verification_pseudo($1)
-			when /^mp\s(\S+)\s(.+)$/i   #!mp => envoie un message privé à quelqu'un
-        m = Message.new
-        envoi m.prive(expediteur, $1, $2)
+			when /^msg\s(\S+)\s(.+)$/i   #!mp => envoie un message à quelqu'un ou à un canal
+        commande_msg(expediteur, $1, $2)
 			when /^s(.+)$/i             #!s => envoie une chaîne de caractère au serveur
         envoi_chaine_serveur($1)
       when /^quitte/              #!quitte => quitte le serveur irc
