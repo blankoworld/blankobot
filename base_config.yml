@@ -1,9 +1,8 @@
-serveur: irc.domaine.com
+serveur: localhost
 port:    6667
 canal:   "#testbot"
 pseudo:  NoIdea
 mdp:     anything
 utilisateursAutorises:
-- Blanko
-- Blankoworld
-- Personne
+- SomeUser
+- SomeAnother
