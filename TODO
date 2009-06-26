@@ -31,6 +31,10 @@ faire jarter (pas plus que 2 a trois fois)
   + nom de l'hôte client
   + nom du serveur client
   + nom réel du client
+- Ajouter des exemples pour la commande !aide
+- Permettre d'ajouter un argument à la plupart des commandes pour :
+  + parler sur un canal
+  + agir sur un canal
 
 Liste des potentielles FONCTIONS
 --------------------------------
@@ -43,5 +47,6 @@ Liste des potentielles FONCTIONS
 - !images
 - !neuf adresse_flux_rss.xml => similaire à "news"
 - FAIT | !aide
-- faire #canal :message => similaire à act --> PRIVMSG #canal :ACTION s'amuse
+- FAIT | faire #canal :message => similaire à act --> PRIVMSG #canal :ACTION s'amuse
+  + commande transformée en !il
 
