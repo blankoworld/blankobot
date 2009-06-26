@@ -51,7 +51,7 @@ class Message
   def depart(msg)
   # quitte le serveur irc en laissant un message (msg)
     msg = "Perdu dans la fracture numérique" if msg.nil?
-    return "QUIT #{msg}"
+    return "QUIT :#{msg}"
   end
 
   def ferme(dest, msg)
@@ -64,4 +64,17 @@ class Message
   # invite une personne (inv) à rejoindre le canal (dest)
     return "INVITE #{inv} #{dest}"
   end
+
+  def whois(pseudo)
+    if !est_un_canal?(pseudo)
+      return "WHOIS #{pseudo}"
+    else
+      return ""
+    end 
+  end
+
+  def statut(pseudo, dest)
+    return "PRIVMSG #{dest} STATUS #{pseudo}"
+  end
+
 end
