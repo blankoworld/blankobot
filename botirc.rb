@@ -44,7 +44,7 @@ class IRC
     @nom_serveur = config.nom_serveur
     @nom_reel = config.nom_reel
 		## Tableau des utilisateurs
-		@authorized_users = Array.new
+		@authorized_users = []
 		
 		[ "od-", "Personne", "Blankoworld", "Blanko" ].each do |u|
 			@authorized_users << Personne.new(u)
@@ -53,7 +53,7 @@ class IRC
 		## Utilise pour diverses choses
 		@whois_actif = false
 		@whois_pseudo = ""
-		@registered_users = Array.new
+		@registered_users = {}
 	end
 
   def afficher_params()
@@ -127,7 +127,7 @@ class IRC
   # Notifie l'utilisateur qu'il a saisi une commande inconnue
    puts "[ COMMANDE INCONNUE ]"
    m = Message.new
-   msg = "Commande '''#{cmd}''' inconnue. Taper !aide pour en savoir plus."
+   msg = "Commande `#{cmd}` inconnue. Taper !aide pour en savoir plus."
    # on envoir délibéremment à l'expediteur pour ne pas charger le canal
    envoi m.prive(exp, exp, msg)
  	 puts msg
@@ -171,10 +171,11 @@ class IRC
         msg << "Exemple : "
         msg << "!il fonctionne correctement."
         msg << "renvoie le message suivant : '#{@nick} fonctionne correctement."
-      when "pseudo"
+      when "identifie"
         msg << "Utilisation : "
-        msg << "!pseudo <pseudo>, permet de vérifier la permission de l'utilisateur <pseudo> à utiliser le robot."
+        msg << "!identifie <pseudo>, permet de vérifier la permission de l'utilisateur <pseudo> à utiliser le robot."
         msg << "Il faut que l'utilisateur <pseudo> soit enregistré d'une quelconque manière sur le réseau."
+        msg << "Si c'est le cas, il recevra un message privé lui indiquant qu'il s'est identifié sur le robot."
       else
         # La commande est inconnue
         msg << "Commande inconnue."
@@ -184,7 +185,7 @@ class IRC
       # On affiche l'ensemble des commandes disponibles
       msg << ""
       msg << "Commandes disponibles: "
-      msg << "aide, de, mp, salut, il, pseudo"
+      msg << "aide, de, mp, salut, il, identifie"
       msg << ""
       msg << "Tapez !aide <commande> pour plus d'informations sur une commande."
     end
@@ -275,8 +276,7 @@ class IRC
 		end
 		debug("L'utilisateur #{pseudo} est #{msg} de ce robot")
 		@whois_actif = true
-		@whois_pseudo = "#{pseudo}"
-		debug(@whois_pseudo)
+#		@whois_pseudo = "#{pseudo}"
 		# ligne pour irc.freenode.net par exemple
 		envoi "WHOIS #{pseudo}"
 		# ligne pour irc.evolu.net
@@ -284,12 +284,56 @@ class IRC
 		return resultat
 	end
 
-	def pseudo_valide()
+  def valide_pseudo()
+  end
+
+	def valide_pseudo_evolu(utilisateur, niveau)
 		# mettre ici de quoi valider le pseudo de quelqu'un avec un chiffre
 		# à la rigueur afficher plusieurs résultat 0, 1, 2, 3
 		# à 3, on est bon.
     # N'est utile que pour evolu.net pour le moment
+  	puts "[ ETUDE STATUT de #{utilisateur}  ]"
+		if @whois_actif && utilisateur_autorise?(utilisateur) && niveau.to_i == 3
+			puts "#{utilisateur} est repéré avec le niveau #{niveau}"
+			@whois_actif = false
+      p = Personne.new(utilisateur)
+      p.autorise = true
+			@registered_users[p.nom] = p.autorise
+      m = Message.new
+			msg = "Tu as été enregistré sur mon robot IRC. Si tu n'en a pas fait la demande, merci de me contacter à l'adresse suivante : blanko@blanko.fr.st . J'aviserais."
+      envoi m.prive(utilisateur, utilisateur, msg)
+		elsif !@whois_actif
+			puts "Aucune demande d'identification n'a été faite."
+    elsif !utilisateur_autorise?(utilisateur)
+      puts "L'utilisateur #{utilisateur} n'est pas autorisé par #{@nick}."
+    else
+      puts "Niveau d'accès insuffisant."
+		end
 	end
+
+  def utilisateur_autorise?(util)
+  # définit si l'utilisateur est autorisé à utiliser des fonctions spécifiques
+    utilisateurs = []
+    @authorized_users.each do |u| 
+      utilisateurs << u.nom
+    end
+    return utilisateurs.include?(util.to_s)
+  end
+
+  def utilisateur_enregistre?(util)
+  # définit si l'utilisateur est enregistré sur le programme, 
+  #  et donc a fait la demande de vérification
+    if @registered_users[util.to_s].nil? or !@registered_users[util.to_s]
+      return false
+    else
+      return true
+    end
+  end
+
+  def envoi_chaine_serveur(chaine)
+  # envoi tel quel une chaîne de caractères sur le serveur
+    envoi chaine
+  end
 
 #######
 ###
@@ -314,51 +358,42 @@ class IRC
 		when /^:(.+?)!(.+?)@(.+?)\sPRIVMSG\s(.+)\s:EVAL (.+)$/i
 			puts "[ EVAL #{$5} from #{$1}!#{$2}@#{$3} ]"
 			envoi "PRIVMSG #{(($4==@nick)?$1:$4)} :#{evaluate($5)}"
+    ## Evaluation des WHOIS
 		# :clarke.freenode.net 320 NoPseudo Personne :is identified to services <= freenode
-		when /^:(.+?)\s(.+?)\s#{@nick}\s#{@whois_seudo}\s:(.+?)identified(.+?)$/i
+		when /^:(.+?)\s(.+?)\s#{@nick}\s#{@whois_pseudo}\s:(.+?)identified(.+?)$/i
 			puts "[ ETUDE WHOIS sur #{@whois_pseudo} ]"
+      valide_pseudo()
 		# :NickServ!services@evolu.net NOTICE NoPseudo :STATUS Personne 3 <= EVOLU.net
-		when /^:(.+?)!(.+?)@(.+?)\sNOTICE\s#{@nick}\s:STATUS\s#{@whois_pseudo}\s(.+?)$/i
-			puts "[ ETUDE STATUT sur #{@whois_pseudo}  ]"
-			if true && @whois_actif
-				puts "Tu es repéré #{$4}"
-				@whois_actif = false
-				@registered_users << Personne.new(@whois_pseudo)
-				envoi "PRIVMSG #{@whois_pseudo} :Tu as été enregistré sur mon robot IRC. Si tu n'en a pas fait la demande, merci de me contacter à l'adresse suivante : blanko@blanko.fr.st . J'aviserais."
-			else
-				puts "Aucune demande n'a été faite."
-			end
-		when /:([^!]*)![^ ].* +PRIVMSG ([^ :]+) +:!(.+)/
-      puts "[ COMMANDE ENVOYÉE par #{$1} : #{$3} ]"
+		when /^:(.+?)!(.+?)@(.+?)\sNOTICE\s#{@nick}\s:STATUS\s(.+)\s(.+?)$/i
+      valide_pseudo_evolu($4, $5)
+    when /^:(.+?)!(.+?)@(.+?)\sPRIVMSG\s(.+)\s:!(.+)$/i
+      # Permet de capter les commandes !nom_de_ma_commande arguments[]
+      puts "[ COMMANDE ENVOYÉE par #{$1} : #{$5} ]"
 			expediteur = $1
-			cible = $2
-			commande = $3
+			cible = $4
+			commande = $5
       arguments = commande[/[^\s]+ +(.+)/, 1]
 			case commande
-			when /^aide/
+			when /^aide/            #!aide => affiche l'aide
         commande_aide(expediteur, commande, arguments)
-			when /^de/
+			when /^de/              #!de => lance un dé à <args> faces
         commande_de(expediteur, cible, arguments)
-			when /^salut/
+			when /^salut/           #!salut => dit bonjour au canal, à une personne, ou donne un message personnalisé
         commande_salut(expediteur, cible, arguments)
-      when /^il/
+      when /^il/              #!il => fait agir le robot sur le canal (ACTION)
         commande_il(expediteur, cible, arguments)
-			when /^pseudo\s(.+)$/i
+			when /^identifie\s(\S+)$/i  #!identifie => lance l'identification du pseudo
 				verif_pseudo($1)
-			when /^mp/
+			when /^mp/              #!mp => envoie un message privé à quelqu'un
 				msg = "/msg #{arguments} Salut" if arguments
 				debug(msg)
 				envoi "PRIVMSG :#{arguments}"
-			when /^s/
-				msg = "#{arguments}" if arguments
-				puts msg
-				envoi msg
-			when /^qui/
-				if expediteur == "Personne"
-					msg = "tu as le droit"
-				else
-					msg = "tu N'as PAS le droit"
-				end
+			when /^s(.+)$/i               #!s => envoie une chaîne de caractère au serveur
+        envoi_chaine_serveur($1)
+      when /^autorise[?]\s(\S+)$/i
+        puts "[ COMMANDE autorisé? ]"
+        m = Message.new
+        envoi m.prive(expediteur, cible, "#{$1} est autorisé.") if utilisateur_enregistre?($1)
 			# autres commandees
 			else
         commande_non_connue(expediteur, cible, commande)
