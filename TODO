@@ -35,6 +35,10 @@ faire jarter (pas plus que 2 a trois fois)
 - Permettre d'ajouter un argument à la plupart des commandes pour :
   + parler sur un canal
   + agir sur un canal
+- Modifier les REGEX pour la vérification du pseudo pour evolu et freenode, en ajoutant par exemple dans la REFEX le chiffre 3 directement !
+- Peut être en faire une méthode principale pour valider le pseudo soit chez freenode et evolu.net une fois les REGEXP faites
+- Et que faire d'une méthode d'identification avec identifiant et mot de passe pour le bot ?
+
 
 Liste des potentielles FONCTIONS
 --------------------------------
