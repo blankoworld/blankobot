@@ -9,7 +9,7 @@ class Message
   end
 
   def prive(dest, exp, msg)
-    if dest.to_s.include?("#")
+    if dest.to_s.include?("#") or dest.to_s.include?("&")
       chaine = "PRIVMSG #{dest} :#{msg}"
     else
       chaine = "PRIVMSG #{exp} :#{msg}"
