@@ -8,6 +8,26 @@ class Message
   def initialize()
   end
 
+  def est_un_canal?(destination)
+  # définit si l'argument est un canal ou pas
+    if destination.to_s.include?("#") or destination.to_s.include?("&")
+      return true
+    else
+      return false
+    end
+  end
+
+  def destination(dest, exp)
+  # retourne le bon destinataire :
+  # - si c'est un canal, on prend (dest)
+  # - sinon retour à l'envoyeur
+    if est_un_canal?(dest)
+      return dest
+    else
+      return exp
+    end
+  end
+
   def prive(dest, exp, msg)
   # envoie un message privé (msg) à un canal (dest) ou une personne (exp)
     if dest.to_s.include?("#") or dest.to_s.include?("&")
@@ -23,9 +43,9 @@ class Message
     return "JOIN #{dest}"
   end
 
-  def action(dest, msg)
+  def action(dest, exp, msg)
   # agir sur le canal donné en paramètre (dest)
-    return "PRIVMSG #{dest} :ACTION #{msg}"
+    return "PRIVMSG #{destination(dest, exp)} :\001ACTION #{msg}"
   end
 
   def depart(msg)

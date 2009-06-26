@@ -141,21 +141,28 @@ class IRC
       # Décrire ici l'aide pour chacune des commandes
       case arg
       when "aide"
-        msg << "Utilisation: "
+        msg << "Utilisation : "
         msg << "!aide, renvoie l'ensemble des commandes disponibles."
       when "de"
-        msg << "Utilisation: "
+        msg << "Utilisation : "
         msg << "!de <nbreFace>, avec nbreFace compris entre 1 et 100, renvoie le résultat d'un lancé de dé à <nbreFace> faces."
       when "mp"
-        msg << "Utilisation: "
+        msg << "Utilisation : "
         msg << "!mp <destination> <message>, envoi le contenu de <message> à l'utilisateur/canal <destination>."
       when "salut"
-        msg << "Utilisation: "
+        msg << "Utilisation : "
         msg << "!salut, vous salue dans le canal courant."
         msg << "!salut <pseudo>, salue la personne <pseudo> de votre part dans le canal courant."
         msg << "!salut <pseudo> <message>, salue la personne <pseudo>, avec le contenu de <message>, en message privé."
+      when "il"
+        msg << "Utilisation : "
+        msg << "!il <message d'action>, fait agir le robot #{@nick}"
+        msg << ""
+        msg << "Exemple : "
+        msg << "!il fonctionne correctement."
+        msg << "renvoie le message suivant : '#{@nick} fonctionne correctement."
       when "pseudo"
-        msg << "Utilisation: "
+        msg << "Utilisation : "
         msg << "!pseudo <pseudo>, permet de vérifier la permission de l'utilisateur <pseudo> à utiliser le robot."
         msg << "Il faut que l'utilisateur <pseudo> soit enregistré d'une quelconque manière sur le réseau."
       else
@@ -167,7 +174,7 @@ class IRC
       # On affiche l'ensemble des commandes disponibles
       msg << ""
       msg << "Commandes disponibles: "
-      msg << "aide, de, mp, salut, pseudo"
+      msg << "aide, de, mp, salut, il, pseudo"
       msg << ""
       msg << "Tapez !aide <commande> pour plus d'informations sur une commande."
     end
@@ -199,6 +206,7 @@ class IRC
   end
 
 	def commande_salut(exp, dest, args)
+  # saluer une personne, optionnellement en lui envoyant un message personnalisé
     m = Message.new
     nbreArgs = nbreMots(args)
     if nbreArgs > 1
@@ -218,6 +226,14 @@ class IRC
       envoi m.prive(dest, exp, msg)
     end
 	end
+
+  def commande_il(exp, dest, args)
+  # faire faire quelque chose à notre robot
+    m = Message.new
+    msg = args.to_s
+    puts "[ ACTION | #{@nick} #{args} ]"
+    envoi m.action(dest, exp, msg)
+  end
 
 #######
 ###
@@ -316,6 +332,9 @@ class IRC
 			when /^salut/
         puts "[ COMMANDE !salut ]"
         commande_salut(expediteur, cible, arguments)
+      when /^il/
+        puts "[ COMMANDE !il ]"
+        commande_il(expediteur, cible, arguments)
 			when /^pseudo\s(.+)$/i
 				verif_pseudo($1)
 			when /^mp/
