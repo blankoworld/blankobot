@@ -2,21 +2,50 @@
 
 # botirc.rb
 
-## Decouvert sur : http://snippets.dzone.com/posts/show/1785
+## Auteur : Olivier DOSSMANN alias Blankoworld
+
+#########
+# NOTES #
+#########
+
+## Decouvert sur : http://snippets.dzone.com/posts/show/1785 par 413x
 ## Puis complete grace a : 
 ##  http://zefredz.frimouvy.org/dotclear/index.php?2006/03/17/111-un-bot-irc-elementaire-en-ruby
-## Le script de base proviendrait de ruby-irc
+## Le script de base proviendrait de ruby-irc (mais pas sûr)
 ##  disponible ici : http://rubyforge.org/projects/ruby-irc/
 
-## Auteur actuel (pour les fonctionnalites suivantes) : Blankoworld
-
 ## RFC : http://www.ietf.org/rfc/rfc1459.txt
+
+##########
+# REQUIS #
+##########
 
 ## Requiert : 
 ## - fichier_conf.rb
 ## - message_irc.rb
 ## - personne.rb
 ## - config.yml
+
+###########
+# LICENCE #
+###########
+
+# Copyright 2009 by 413x (http://snippets.dzone.com/user/413x) and Olivier DOSSMANN (Blankoworld)
+
+# This file is part of BlankoBot.
+# 
+# BlankoBot is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# BlankoBot is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with BlankoBot.  If not, see <http://www.gnu.org/licenses/>.
 
 require "socket"
 require "fichier_conf"
@@ -409,7 +438,7 @@ class IRC
 			envoi "NOTICE #{$1} :\001PING #{$4}\001"
 		when /^:(.+?)!(.+?)@(.+?)\sPRIVMSG\s.+\s:[\001]VERSION[\001]$/i
 			puts "[ CTCP VERSION from #{$1}!#{$2}@#{$3} ]"
-			envoi "NOTICE #{$1} :\001VERSION Ruby-irc v0.042\001"
+			envoi "NOTICE #{$1} :\001VERSION BlankoBot v0.1\001"
 		when /^:(.+?)!(.+?)@(.+?)\sPRIVMSG\s(.+)\s:EVAL (.+)$/i
 			puts "[ EVAL #{$5} from #{$1}!#{$2}@#{$3} ]"
 			envoi "PRIVMSG #{(($4==@nick)?$1:$4)} :#{evaluate($5)}"
