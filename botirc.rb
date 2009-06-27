@@ -46,9 +46,9 @@ class IRC
 		## Tableau des utilisateurs
 		@authorized_users = []
 		
-		[ "od-", "Personne", "Blankoworld", "Blanko" ].each do |u|
-			@authorized_users << Personne.new(u)
-		end
+    config.utilisateurs_autorises.each do |u|
+      @authorized_users << Personne.new(u)
+    end
 
 		## Utilise pour diverses choses
 		@whois_actif = false
@@ -233,7 +233,7 @@ class IRC
   # - ou bien le fait qu'une commande soit inconnue
     puts "[ COMMANDE !aide ]"
     m = Message.new
-    msg = Array.new
+    msg = []
     nbre = nbreMots(arg)
     if nbre > 1
       # La commande aide n'accepte qu'un maximum d'un paramètre
@@ -479,7 +479,7 @@ end
 # Version du programme
 version="0.1.1"
 
-aide = Array.new
+aide = []
 aide << "botirc version #{version}"
 aide << ""
 aide << "Utilisation : ruby botirc.rb [--aide] fichierConfiguration"
