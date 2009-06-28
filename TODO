@@ -39,6 +39,11 @@ faire jarter (pas plus que 2 a trois fois)
 - Peut être en faire une méthode principale pour valider le pseudo soit chez freenode et evolu.net une fois les REGEXP faites
 - Et que faire d'une méthode d'identification avec identifiant et mot de passe pour le bot ?
 - Transformer la commande !il en: !il #canal <message> pour une meilleure utilisation. Peut être la changer en !fait #canal <message> pour ça, ou !agit
+- Rendre la commande !s PRIVÉE !
+- Enlever le @@DEBUG __avant__ de sortir un "release tag" stable-v0.x
+- Ajouter des commandes simples pour (cf la RFC) :
+  + enregistrer le robot sur l'IRC
+  + modifier quelques informations dudit robot
 
 Liste des potentielles FONCTIONS
 --------------------------------
