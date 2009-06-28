@@ -38,7 +38,7 @@ faire jarter (pas plus que 2 a trois fois)
 - Modifier les REGEX pour la vérification du pseudo pour evolu et freenode, en ajoutant par exemple dans la REFEX le chiffre 3 directement !
 - Peut être en faire une méthode principale pour valider le pseudo soit chez freenode et evolu.net une fois les REGEXP faites
 - Et que faire d'une méthode d'identification avec identifiant et mot de passe pour le bot ?
-
+- Transformer la commande !il en: !il #canal <message> pour une meilleure utilisation. Peut être la changer en !fait #canal <message> pour ça, ou !agit
 
 Liste des potentielles FONCTIONS
 --------------------------------
@@ -47,10 +47,11 @@ Liste des potentielles FONCTIONS
 - va #canal => similaire à join
 - op #canal pseudo
 - !de 100
-- !google
+- !google <nbreRésultat> <mots cherchés> : où nbreRésultat ne doit pas dépasser 4/5 et mots cherchés pas plus que 5
 - !images
 - !neuf adresse_flux_rss.xml => similaire à "news"
 - FAIT | !aide
 - FAIT | faire #canal :message => similaire à act --> PRIVMSG #canal :ACTION s'amuse
   + commande transformée en !il
+- !identi.ca pseudo => donne le dernier statut sous identi.ca du pseudo concerné
 
